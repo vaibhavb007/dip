@@ -11,13 +11,14 @@ C(3:3:end, :) = C(4:3:end, :);
 
 %%if interpolation:
 C(:, 2:2:end) = (C(:, 1:2:end-1) + C(:, 3:2:end))/2;
-C = uint8(C);
-figure(1), imshow(C);
-waitbar
-save('../images/nearestneighbout.mat')
+
+figure('Name','barbaraSmall_nearest','NumberTitle','off'), imshow(C,[])
+%save('../images/nearestneighbout.mat')
 colorbar
 axis on
-figure(), imshow(B);
+
+figure('Name','barbaraSmall_original','NumberTitle','off'), imshow(B)
 colorbar
 axis on
+
 end
