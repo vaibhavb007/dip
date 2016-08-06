@@ -1,29 +1,8 @@
-function [B] = adaptiveHistogram(A)
-    T = num2cell(A,1);
+function [x] = adaptiveHistogram(A)
     
-    counter=cell(size(T));
-    counter(:)=num2cell((1:numel(T))/numel(T));
-    
-    B = cellfun(@calculateIntensity,T,counter);
-    B = B';
+    intensity = A((size(A,1)+1)/2,(size(A,2)+1)/2);
+    Pixel_positions = find(A<=intensity);
+    fraction = size(Pixel_positions,1)/(size(A,1)*size(A,2));
+    x = fraction*255;
+
 end
-
-function [x] = calculateIntensity(A,counter)
-    
-    persistent waitbarh;
-
-    if isempty(waitbarh) || ~ishandle(waitbarh)
-        waitbarh=waitbar(0,'cellfun is working...'); 
-    end
-
-    waitbar(counter,waitbarh);
-
-    B = equalizeChannel(A);
-    x = B((size(B,1)+1)/2);
-    
-    if counter==1 % last call
-        close(waitbarh);
-    end
-    
-end
-
