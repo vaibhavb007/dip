@@ -5,11 +5,8 @@ tic;
 % 
 
 A = imread('../data/barbara.png');
-B = myCLAHE(A,11);
-
-figure, imshow(A, []);
-
+B = myAHE(A,11);
 tic;
-B = myAHE(A,151);
+figure, imshow(A, []);
 figure, imshow(B, []);
 toc;
