@@ -8,7 +8,7 @@ tic;
 % myHE('TEM.png');
 
 A = imread('../data/barbara.png');
-B = myAHE(A,11);
+B = myCLAHE(A,11);
 
 figure, imshow(A, []);
 figure, imshow(B, []);
