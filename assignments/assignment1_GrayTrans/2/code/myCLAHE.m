@@ -7,7 +7,9 @@ function [output] = myCLAHE(input , windowSize)
     output = zeros(rowCount,columnCount,size(input,3));
     
     for i = 1:size(output,3)
-        output(:,:,i) = nlfilter(input(:,:,i),'indexed',[windowSize windowSize],@equalizeChannelCutoff);
+        output(:,:,i) = nlfilter(input(:,:,i),'indexed',[windowSize windowSize],@adaptiveHistogramcutoff);
     end
-
+    if size(input,3) == 3
+        output = uint8(output);
+    end
 end

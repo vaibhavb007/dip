@@ -3,10 +3,10 @@
 tic;
 %% Your code here
 % 
-
-A = imread('../data/barbara.png');
-B = myAHE(A,11);
 tic;
+A = imread('../data/barbara.png');
+B = myCLAHE(A,10);
+
 figure, imshow(A, []);
 figure, imshow(B, []);
 toc;
