@@ -7,6 +7,6 @@ tic;
 A = imread('../data/barbara.png');
 B = myCLAHE(A,10);
 
-figure, imshow(A, []);
-figure, imshow(B, []);
+figure(1), imshow(A, []);
+figure(2), imshow(B, []);
 toc;
