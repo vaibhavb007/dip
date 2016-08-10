@@ -1,0 +1,16 @@
+function [] = Display(name, input_Matrix)
+% Function to display any image with desired colourmap and axis
+%   Detailed explanation goes here
+myNumOfColors = 200;
+myColorScale = [[0:1:255]',[0:1:255]',[0:1:1]'];
+figure('Name',name,'NumberTitle','off'), imageshow(input_Matrix)
+colormap (myColorScale)
+colorbar
+axis on
+%colormap jet;
+daspect ([1 1 1]);
+
+
+
+end
+

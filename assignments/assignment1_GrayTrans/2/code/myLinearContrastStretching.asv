@@ -3,14 +3,13 @@ function [output] = myLinearContrastStretching(input)
 %   Detailed explanation goes here
 
 if size(input,3) == 3
-   disp('here');
+   
    for i=1:size(input,3)
-        output(:,:,i) = performLinearstretch(input(:,:,i));
+        output(:,:,i) = equalizeChannel(input(:,:,i),1.0);
    end
    
 else
    output = performLinearstretch(input);
-end
 end
 
 function [output] = performLinearstretch(input)
