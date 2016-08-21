@@ -1,18 +1,20 @@
 function [] = bilateralFilter(A)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-
+A = load('../data/barbara.mat','-mat');
+A = A.imageOrig;
 dimen = size(A);
 minI = min(min(A));
 maxI = max(max(A));
 sd = double(minI+0.20*(maxI-minI));
 gaussianMask = sqrt(sd)*randn(dimen(1));
+Display('Gaussian Mask',gaussianMask);
 corruptedImage = A +gaussianMask;
-Display('2',corruptedImage);
+%Display('2',corruptedImage);
 
 w=10;
-sigma_d = 5;
-sigma_r = 9;
+sigma_d = 1.7;
+sigma_r = 1.1*8;
 [X,Y] = meshgrid(-w:w,-w:w);
 G = exp(-(X.^2+Y.^2)/(2*sigma_d^2));
 
@@ -38,5 +40,7 @@ for i = 1:dim(1)
                
    end
 end
-Display('4',B);
+%Display('3',B);
+rmsd = sqrt(sum((B(:) - A(:)).^2)/dimen(1));
+disp(rmsd);
 end
