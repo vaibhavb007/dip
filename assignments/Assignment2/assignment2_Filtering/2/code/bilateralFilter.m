@@ -1,22 +1,26 @@
-function [] = bilateralFilter(A)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
-A = load('../data/barbara.mat','-mat');
-A = A.imageOrig;
+%% Function - bilateralFilter
+% Function takes inputs as imageMatrix, sigma for spatial gaussian 
+% and sigma for gaussian over intensity. Then it applies bilateral
+% filter on image using these parameters.
+
+function [M, N] = bilateralFilter(A, sigma_d, sigma_r)
+
 dimen = size(A);
 minI = min(min(A));
 maxI = max(max(A));
-sd = double(minI+0.20*(maxI-minI));
-gaussianMask = sqrt(sd)*randn(dimen(1));
-Display('Gaussian Mask',gaussianMask);
-corruptedImage = A +gaussianMask;
-Display('2',corruptedImage);
+
+sd = double(0.05*(maxI - minI));
+
+rng(0); % set seed so that the corrupted image is constant
+gaussianMask = sd * randn(dimen(1));
+
+corruptedImage = A + gaussianMask;
+M = corruptedImage;
+% Display('corruptedBarbara',corruptedImage);
 
 w=10;
-sigma_d = 1.7;
-sigma_r = 1.1*8;
 [X,Y] = meshgrid(-w:w,-w:w);
-G_space = exp(-(X.^2+Y.^2)/(2*sigma_d^2));
+G_space = exp(-(X.^2+Y.^2)/(2*sigma_d^2))/(sigma_d*sqrt(2*pi));
 
 dim = size(corruptedImage);
 B = zeros(dimen(1));
@@ -32,14 +36,17 @@ for i = 1:dim(1)
          window = corruptedImage(iMin:iMax,jMin:jMax);
       
          % Compute Gaussian intensity weights.
-         G_Intensity = exp(-(window-corruptedImage(i,j)).^2/(2*sigma_r^2));
+         G_Intensity = exp(-(window-corruptedImage(i,j)).^2/(2*sigma_r^2))/(sigma_r*sqrt(2*pi));
       
          % Calculate bilateral filter response.
          F = G_Intensity.*G_space((iMin:iMax)-i+w+1,(jMin:jMax)-j+w+1);
          B(i,j) = sum(F(:).*window(:))/sum(F(:));         
    end
 end
-Display('3',B);
+
+N = B;
+%Display('barbaraBilateral',B);
 rmsd = sqrt(sum((B(:) - A(:)).^2)/dimen(1));
 disp(rmsd);
+
 end

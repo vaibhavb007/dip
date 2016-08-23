@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Part 1 : Image Sharpening</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-08-23"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+      --><title>Parameters for Bilateral Filter</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-08-22"><meta name="DC.source" content="Params.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,79 +66,37 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Part 1 : Image Sharpening</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Image sharpening using Unsharp mask filter</a></li></ul></div><h2>Image sharpening using Unsharp mask filter<a name="1"></a></h2><p>Call function myUnsharpMasking Function takes inputImageMatrix, sigma and scale as argument</p><pre class="codeinput">tic;
-
-<span class="comment">% Apply it on lionCrop.mat</span>
-A = load(<span class="string">'../data/lionCrop.mat'</span>,<span class="string">'-mat'</span>);
-A = A.imageOrig;
-A = A*255;
-A2 = linearContrast(A);
-
-B = myUnsharpMasking(A, 2, 1);
-B = linearContrast(B);
-
-figure(<span class="string">'OuterPosition'</span>,[0 0 1200 600]);
-subplot(1,2,1); Display(A2);
-subplot(1,2,2); Display(B);
-
-<span class="comment">%Apply it on superMoonCrop.mat</span>
-A = load(<span class="string">'../data/superMoonCrop.mat'</span>,<span class="string">'-mat'</span>);
-A = A.imageOrig;
-A = A*255;
-A2 = linearContrast(A);
-
-B = myUnsharpMasking(A, 2.4, 1.2);
-B = linearContrast(B);
-
-figure(<span class="string">'OuterPosition'</span>,[0 0 1200 600]);
-subplot(1,2,1); Display(A2);
-subplot(1,2,2); Display(B);
-
-toc;
-</pre><pre class="codeoutput">Elapsed time is 1.092221 seconds.
-</pre><img vspace="5" hspace="5" src="../../images/myMainScript_01.png" alt=""> <img vspace="5" hspace="5" src="../../images/myMainScript_02.png" alt=""> 
-
-<br>
-Tuned param for lionCrop -> sigma = 2 , scale = 1 <br>
-Tuned param for superMoonCrop -> sigma = 2.4 , scale = 1.2 
-
-<p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>Parameters for Bilateral Filter</h1><!--introduction--><p>Parameters used for the bilateral filter part</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Section 1 Optimal Parameters</a></li><li><a href="#2">Section 2 RMSD values for non optimal parameters</a></li></ul></div><h2>Section 1 Optimal Parameters<a name="1"></a></h2><p>Parameters leading to lowest RMSD</p><pre class="codeinput">windowSize = 21
+sigma_d = 1.45
+sigma_r = 10
+optimalRmsd = 74.3217
+</pre><h2>Section 2 RMSD values for non optimal parameters<a name="2"></a></h2><p>Experimentally verifying that in neighbourhood, RMSD is greater Rmsd(i,j) = Rmsd where sigma_d = i * optimalSigma_d and sigma_r = j * optimalSigma_r</p><pre class="codeinput">Rmsd(0.9,1) = 74.4084
+Rmsd(1.1,1) = 74.3893
+Rmsd(1,0.9) = 74.7897
+Rmsd(1,1.1) = 74.7148
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% Part 1 : Image Sharpening
-%%
-%%% Image sharpening using Unsharp mask filter
-% Call function myUnsharpMasking
-% Function takes inputImageMatrix, sigma and scale as argument
+%% Parameters for Bilateral Filter
+% Parameters used for the bilateral filter part
 
-tic;
+%% Section 1 Optimal Parameters
+% Parameters leading to lowest RMSD
+windowSize = 21
+sigma_d = 1.45
+sigma_r = 10
+optimalRmsd = 74.3217
+%% Section 2 RMSD values for non optimal parameters
+% Experimentally verifying that in neighbourhood, RMSD is greater
+% Rmsd(i,j) = Rmsd where sigma_d = i * optimalSigma_d and sigma_r = j *
+% optimalSigma_r
+Rmsd(0.9,1) = 74.4084
+Rmsd(1.1,1) = 74.3893
+Rmsd(1,0.9) = 74.7897
+Rmsd(1,1.1) = 74.7148
 
-% Apply it on lionCrop.mat
-A = load('../data/lionCrop.mat','-mat');
-A = A.imageOrig;
-A = A*255;
-A2 = linearContrast(A);
 
-B = myUnsharpMasking(A, 2, 1);
-B = linearContrast(B);
 
-figure('OuterPosition',[0 0 1200 600]);
-subplot(1,2,1); Display(A2);
-subplot(1,2,2); Display(B);
 
-%Apply it on superMoonCrop.mat
-A = load('../data/superMoonCrop.mat','-mat');
-A = A.imageOrig;
-A = A*255;
-A2 = linearContrast(A);
-
-B = myUnsharpMasking(A, 2.4, 1.2);
-B = linearContrast(B);
-
-figure('OuterPosition',[0 0 1200 600]);
-subplot(1,2,1); Display(A2);
-subplot(1,2,2); Display(B);
-
-toc;
 
 ##### SOURCE END #####
 --></body></html>

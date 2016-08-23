@@ -6,7 +6,12 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Part 1 : Image Sharpening</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-08-23"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+      --><title>Part 2 - Bilateral Filtering</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-08-22"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+
+.imgContainer{
+    float:left;
+}
+
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,78 +71,63 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Part 1 : Image Sharpening</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Image sharpening using Unsharp mask filter</a></li></ul></div><h2>Image sharpening using Unsharp mask filter<a name="1"></a></h2><p>Call function myUnsharpMasking Function takes inputImageMatrix, sigma and scale as argument</p><pre class="codeinput">tic;
+  </style></head><body><div class="content"><h1>Part 2 - Bilateral Filtering</h1><p>Showing effects of bilateral filter</p><pre class="codeinput">tic;
+optimal_sigma_d = 1.45;
+optimal_sigma_r = 10;
 
-<span class="comment">% Apply it on lionCrop.mat</span>
-A = load(<span class="string">'../data/lionCrop.mat'</span>,<span class="string">'-mat'</span>);
+A = load(<span class="string">'../data/barbara.mat'</span>,<span class="string">'-mat'</span>);
 A = A.imageOrig;
-A = A*255;
-A2 = linearContrast(A);
+Display(<span class="string">'barbaraOrig'</span>,A);
 
-B = myUnsharpMasking(A, 2, 1);
-B = linearContrast(B);
-
-figure(<span class="string">'OuterPosition'</span>,[0 0 1200 600]);
-subplot(1,2,1); Display(A2);
-subplot(1,2,2); Display(B);
-
-<span class="comment">%Apply it on superMoonCrop.mat</span>
-A = load(<span class="string">'../data/superMoonCrop.mat'</span>,<span class="string">'-mat'</span>);
-A = A.imageOrig;
-A = A*255;
-A2 = linearContrast(A);
-
-B = myUnsharpMasking(A, 2.4, 1.2);
-B = linearContrast(B);
-
-figure(<span class="string">'OuterPosition'</span>,[0 0 1200 600]);
-subplot(1,2,1); Display(A2);
-subplot(1,2,2); Display(B);
-
+<span class="comment">% Call function myBilateralFiltering.m which takes inputs - imageMatrix,</span>
+<span class="comment">% sigma_r and sigma_d</span>
+bilateralFilter(A,optimal_sigma_d,optimal_sigma_r);
 toc;
-</pre><pre class="codeoutput">Elapsed time is 1.092221 seconds.
-</pre><img vspace="5" hspace="5" src="../../images/myMainScript_01.png" alt=""> <img vspace="5" hspace="5" src="../../images/myMainScript_02.png" alt=""> 
+</pre>
 
-<br>
-Tuned param for lionCrop -> sigma = 2 , scale = 1 <br>
-Tuned param for superMoonCrop -> sigma = 2.4 , scale = 1.2 
+Elapsed time is 16.041379 seconds.
 
-<p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+<div>
+    <div class="imgContainer">
+        <img src="../../images/myMainScript_01.png" height="500" width="500"/>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fig1. - barbara original</p>
+    </div>
+    <div class="imgContainer">
+         <img src="../../images/myMainScript_02.png" height="500" width="500"/>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fig2. - gaussian mask </p>
+    </div>
+</div>
+
+<div>
+    <div class="imgContainer">
+        <img src="../../images/myMainScript_03.png" height="500" width="500"/>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fig3. - barbara corrupted </p>
+    </div>
+    <div class="imgContainer">
+        <img src="../../images/myMainScript_04.png" height="500" width="500"/>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fig4. - barbara bilateral</p>
+    </div>
+</div>
+
+<div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p>
+</div><!--
 ##### SOURCE BEGIN #####
-%% Part 1 : Image Sharpening
-%%
-%%% Image sharpening using Unsharp mask filter
-% Call function myUnsharpMasking
-% Function takes inputImageMatrix, sigma and scale as argument
+%% Part 2 - Bilateral Filtering
+% Showing effects of bilateral filter
 
 tic;
+optimal_sigma_d = 1.45;
+optimal_sigma_r = 10;
 
-% Apply it on lionCrop.mat
-A = load('../data/lionCrop.mat','-mat');
+A = load('../data/barbara.mat','-mat');
 A = A.imageOrig;
-A = A*255;
-A2 = linearContrast(A);
+Display('barbaraOrig',A);
 
-B = myUnsharpMasking(A, 2, 1);
-B = linearContrast(B);
-
-figure('OuterPosition',[0 0 1200 600]);
-subplot(1,2,1); Display(A2);
-subplot(1,2,2); Display(B);
-
-%Apply it on superMoonCrop.mat
-A = load('../data/superMoonCrop.mat','-mat');
-A = A.imageOrig;
-A = A*255;
-A2 = linearContrast(A);
-
-B = myUnsharpMasking(A, 2.4, 1.2);
-B = linearContrast(B);
-
-figure('OuterPosition',[0 0 1200 600]);
-subplot(1,2,1); Display(A2);
-subplot(1,2,2); Display(B);
-
+% Call function myBilateralFiltering.m which takes inputs - imageMatrix,
+% sigma_r and sigma_d
+bilateralFilter(A,optimal_sigma_d,optimal_sigma_r);
 toc;
 
 ##### SOURCE END #####
