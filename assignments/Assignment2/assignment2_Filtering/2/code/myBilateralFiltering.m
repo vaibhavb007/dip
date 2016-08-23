@@ -1,9 +1,9 @@
-%% Function - bilateralFilter
+%% Function - myBilateralFiltering
 % Function takes inputs as imageMatrix, sigma for spatial gaussian 
 % and sigma for gaussian over intensity. Then it applies bilateral
 % filter on image using these parameters.
 
-function [M, N] = bilateralFilter(A, sigma_d, sigma_r)
+function [M, N] = myBilateralFiltering(A, sigma_d, sigma_r)
 
 dimen = size(A);
 minI = min(min(A));
@@ -14,9 +14,13 @@ sd = double(0.05*(maxI - minI));
 rng(0); % set seed so that the corrupted image is constant
 gaussianMask = sd * randn(dimen(1));
 
+figure('OuterPosition',[0 0 500 500]);
+imshow(gaussianMask, []);
+colorbar;
+axis on;
+
 corruptedImage = A + gaussianMask;
 M = corruptedImage;
-% Display('corruptedBarbara',corruptedImage);
 
 w=10;
 [X,Y] = meshgrid(-w:w,-w:w);
@@ -45,7 +49,6 @@ for i = 1:dim(1)
 end
 
 N = B;
-%Display('barbaraBilateral',B);
 rmsd = sqrt(sum((B(:) - A(:)).^2)/dimen(1));
 disp(rmsd);
 
