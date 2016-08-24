@@ -19,7 +19,6 @@ sigma_r = 1.1*8;
 G_space = exp(-(X.^2+Y.^2)/(2*sigma_d^2));
 
 dim = size(corruptedImage);
-B = zeros(dimen(1));
 
 for i = 1:dim(1)
    for j = 1:dim(2)
