@@ -11,21 +11,25 @@ A = load('../data/lionCrop.mat','-mat');
 A = A.imageOrig;
 A = A*255;
 A2 = linearContrast(A);
-Display('lionCrop_orig',A2);
 
 B = myUnsharpMasking(A, 2, 1);
 B = linearContrast(B);
-Display('lionCrop_sharpen',B);
+
+figure('OuterPosition',[0 0 1200 600]);
+subplot(1,2,1); Display(A2);
+subplot(1,2,2); Display(B);
 
 %Apply it on superMoonCrop.mat
 A = load('../data/superMoonCrop.mat','-mat');
 A = A.imageOrig;
 A = A*255;
 A2 = linearContrast(A);
-Display('superMoonCrop_orig',A2);
 
 B = myUnsharpMasking(A, 2.4, 1.2);
 B = linearContrast(B);
-Display('superMoonCrop_sharpen',B);
+
+figure('OuterPosition',[0 0 1200 600]);
+subplot(1,2,1); Display(A2);
+subplot(1,2,2); Display(B);
 
 toc;
