@@ -13,13 +13,13 @@ corruptedImage = A +gaussianMask;
 Display('2',corruptedImage);
 
 
-N = 10;
-P = 4;
-
-d = 1;
+w = 10;
+p = 4;
+d = 25;
 
 [m,n] = size(corruptedImage);
-B = zeroes(m,n);
+B = zeros(m,n);
+paddedImg = padarray(A, [p p]);
 for i = 1:m
    for j = 1:n
       
@@ -29,19 +29,21 @@ for i = 1:m
          wyMin = max(j-w,1);
          wyMax = min(j+w,n);
          
-         currentPatch = corruptedImage(i-p:i+p, j-p:j+p);
+         currentPatch = paddedImg(i:i+2*p, j:j+2*p);
          
          numerator = 0;
          denominator = 0;
          
          for a = wxMin:wxMax
              for b = wyMin:wyMax
-                iterativePatch = corruptedImage(a-p:a+p, b-p:b+p);
-                gaussian = exp(-(currentPatch - iterativePatch).^2/(2*d^2));
+                iterativePatch = paddedImg(a:a+2*p, b:b+2*p);
+                gaussian = exp(-sum(sum((currentPatch - iterativePatch).^2))/(2*d^2));
                 denominator = gaussian + denominator;
                 numerator = gaussian*corruptedImage(a,b) + numerator;
              end
          end
+         %disp(numerator);
+         %disp(denominator);
          B(i,j) = numerator/denominator;
    end
 end
