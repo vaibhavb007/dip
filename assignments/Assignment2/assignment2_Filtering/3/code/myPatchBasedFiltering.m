@@ -1,17 +1,13 @@
-function [] = myPatchBasedFiltering(A)
+function [M,N] = myPatchBasedFiltering(A)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-A = load('../data/barbara.mat','-mat');
-A = A.imageOrig;
 dimen = size(A);
 minI = min(min(A));
 maxI = max(max(A));
 sd = double(minI+0.20*(maxI-minI));
 gaussianMask = sqrt(sd)*randn(dimen(1));
-Display('Gaussian Mask',gaussianMask);
 corruptedImage = A +gaussianMask;
-Display('2',corruptedImage);
-
+M = corruptedImage;
 
 w = 10;
 p = 4;
@@ -42,12 +38,10 @@ for i = 1:m
                 numerator = gaussian*corruptedImage(a,b) + numerator;
              end
          end
-         %disp(numerator);
-         %disp(denominator);
          B(i,j) = numerator/denominator;
    end
 end
-Display('3',B);
+N = B;
 rmsd = sqrt(sum((B(:) - A(:)).^2)/dimen(1));
 disp(rmsd);
 end
