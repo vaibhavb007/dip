@@ -4,7 +4,7 @@ tic;
 % Call function myPatchBasedFiltering.m which takes inputs - imageMatrix,
 A = load('../data/barbara.mat','-mat');
 A = A.imageOrig;
-[B,C] = myPatchBasedFiltering(A);
+[A,B,C] = myPatchBasedFiltering(A);
 
 figure('OuterPosition',[0 0 1300 600]);
 subplot(1,3,1); Display(A);

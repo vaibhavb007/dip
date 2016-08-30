@@ -48,7 +48,7 @@ for i = 1:dim(1)
 end
 
 N = B;
-rmsd = sqrt(sum((B(:) - A(:)).^2)/dimen(1));
+rmsd = sqrt(sum((B(:) - A(:)).^2)/(dimen(1)*dimen(2)));
 disp(rmsd);
 
 end
