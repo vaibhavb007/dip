@@ -26,6 +26,10 @@ B = zeros(m,n);
 paddedImg = padarray(corruptedImage, [p p]);
 %Gaussian mask to have the 
 gaussian_mask = fspecial('gaussian', [9,9], 1.25);
+imagesc(gaussian_mask)
+colormap(gray)
+colorbar
+axis on;
 
 for i = 1:m
    for j = 1:n
