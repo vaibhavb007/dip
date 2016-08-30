@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Part 2 - Bilateral Filtering</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-08-30"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+      --><title>Function - myBilateralFiltering</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-08-30"><meta name="DC.source" content="myBilateralFiltering.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,70 +66,106 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Part 2 - Bilateral Filtering</h1><p>Showing effects of bilateral filter</p><pre class="codeinput">tic;
-optimal_sigma_d = 1.45;
-optimal_sigma_r = 10;
+  </style></head><body><div class="content"><h1>Function - myBilateralFiltering</h1><p>Function takes inputs as imageMatrix, sigma for spatial gaussian and sigma for gaussian over intensity. Then it applies bilateral filter on image using these parameters.</p><pre class="codeinput"><span class="keyword">function</span> [corruptedImage, N] = myBilateralFiltering(A, sigma_d, sigma_r)
 
-A = load(<span class="string">'../data/barbara.mat'</span>,<span class="string">'-mat'</span>);
-A = A.imageOrig;
+dimen = size(A);
+minI = min(min(A));
+maxI = max(max(A));
 
-<span class="comment">% Call function myBilateralFiltering.m which takes inputs - imageMatrix,</span>
-<span class="comment">% sigma_r and sigma_d</span>
-[B,C] = myBilateralFiltering(A,optimal_sigma_d,optimal_sigma_r);
+sd = double(0.05*(maxI - minI));
 
-figure(<span class="string">'OuterPosition'</span>,[0 0 1300 600]);
-x1 = subplot(1,3,1);
-imshow(A,[])
-colormap(x1,gray)
+rng(0); <span class="comment">% set seed so that the corrupted image is constant</span>
+noiseMask = sd * randn(dimen(1));
+corruptedImage = A + noiseMask;
+
+w=ceil(1.5*sigma_d);
+
+<span class="comment">%create spatial gaussian mask</span>
+[X,Y] = meshgrid(-w:w,-w:w);
+G_space = exp(-(X.^2+Y.^2)/(2*sigma_d^2))/(sigma_d*sqrt(2*pi));
+imagesc(G_space)
+colormap(gray)
+colorbar
 axis <span class="string">on</span>;
 
-x2 = subplot(1,3,2);
-imshow(B,[])
-colormap(x2,gray)
-axis <span class="string">on</span>;
+<span class="keyword">for</span> i = 1:dimen(1)
+   <span class="keyword">for</span> j = 1:dimen(2)
 
-x3 = subplot(1,3,3);
-imshow(C,[])
-colormap(x3,gray)
-axis <span class="string">on</span>;
+         <span class="comment">% Extract local region.</span>
+         iMin = max(i-w,1);
+         iMax = min(i+w,dimen(1));
+         jMin = max(j-w,1);
+         jMax = min(j+w,dimen(2));
+         window = corruptedImage(iMin:iMax,jMin:jMax);
 
-toc;
-</pre><pre class="codeoutput">RMSD -> 3.2874
+         <span class="comment">% Compute Gaussian intensity weights.</span>
+         G_Intensity = exp(-(window-corruptedImage(i,j)).^2/(2*sigma_r^2))/(sigma_r*sqrt(2*pi));
 
-Elapsed time is 7.471295 seconds.
-</pre><br><p align="center"> <img vspace="5" hspace="5" src="myMainScript_01.png" alt=""><br>Gaussian Mask<br>  <img vspace="5" hspace="5" src="myMainScript_02.png" alt="">Original vs Corrupted vs Filtered Image</p> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+         <span class="comment">% Calculate bilateral filter response.</span>
+         F = G_Intensity.*G_space((iMin:iMax)-i+w+1,(jMin:jMax)-j+w+1);
+         B(i,j) = sum(F(:).*window(:))/sum(F(:));
+   <span class="keyword">end</span>
+<span class="keyword">end</span>
+N=B;
+rmsd = sqrt(sum((B(:) - A(:)).^2)/(dimen(1)*dimen(2)));
+disp(rmsd);
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in myBilateralFiltering (line 8)
+dimen = size(A);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% Part 2 - Bilateral Filtering
-% Showing effects of bilateral filter
+%% Function - myBilateralFiltering
+% Function takes inputs as imageMatrix, sigma for spatial gaussian 
+% and sigma for gaussian over intensity. Then it applies bilateral
+% filter on image using these parameters.
 
-tic;
-optimal_sigma_d = 1.45;
-optimal_sigma_r = 10;
+function [corruptedImage, N] = myBilateralFiltering(A, sigma_d, sigma_r)
 
-A = load('../data/barbara.mat','-mat');
-A = A.imageOrig;
+dimen = size(A);
+minI = min(min(A));
+maxI = max(max(A));
 
-% Call function myBilateralFiltering.m which takes inputs - imageMatrix,
-% sigma_r and sigma_d
-[B,C] = myBilateralFiltering(A,optimal_sigma_d,optimal_sigma_r);
+sd = double(0.05*(maxI - minI));
 
-figure('OuterPosition',[0 0 1300 600]);
-x1 = subplot(1,3,1);
-imshow(A,[])
-colormap(x1,gray)
+rng(0); % set seed so that the corrupted image is constant
+noiseMask = sd * randn(dimen(1));
+corruptedImage = A + noiseMask;
+
+w=ceil(1.5*sigma_d);
+
+%create spatial gaussian mask
+[X,Y] = meshgrid(-w:w,-w:w);
+G_space = exp(-(X.^2+Y.^2)/(2*sigma_d^2))/(sigma_d*sqrt(2*pi));
+imagesc(G_space)
+colormap(gray)
+colorbar
 axis on;
 
-x2 = subplot(1,3,2); 
-imshow(B,[])
-colormap(x2,gray)  
-axis on;
+for i = 1:dimen(1)
+   for j = 1:dimen(2)
+      
+         % Extract local region.
+         iMin = max(i-w,1);
+         iMax = min(i+w,dimen(1));
+         jMin = max(j-w,1);
+         jMax = min(j+w,dimen(2));
+         window = corruptedImage(iMin:iMax,jMin:jMax);
+      
+         % Compute Gaussian intensity weights.
+         G_Intensity = exp(-(window-corruptedImage(i,j)).^2/(2*sigma_r^2))/(sigma_r*sqrt(2*pi));
+      
+         % Calculate bilateral filter response.
+         F = G_Intensity.*G_space((iMin:iMax)-i+w+1,(jMin:jMax)-j+w+1);
+         B(i,j) = sum(F(:).*window(:))/sum(F(:));         
+   end
+end
+N=B;
+rmsd = sqrt(sum((B(:) - A(:)).^2)/(dimen(1)*dimen(2)));
+disp(rmsd);
 
-x3 = subplot(1,3,3);
-imshow(C,[])
-colormap(x3,gray)
-axis on;
-
-toc;
-
+end
 ##### SOURCE END #####
 --></body></html>

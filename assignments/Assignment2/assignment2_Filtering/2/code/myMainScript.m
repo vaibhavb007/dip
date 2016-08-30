@@ -14,13 +14,13 @@ A = A.imageOrig;
 
 figure('OuterPosition',[0 0 1300 600]);
 x1 = subplot(1,3,1);
-imshow(B,[])
+imshow(A,[])
 colormap(x1,gray)
 axis on;
 
 x2 = subplot(1,3,2); 
-imshow(A,[])
-colormap(x2,gray)
+imshow(B,[])
+colormap(x2,gray)  
 axis on;
 
 x3 = subplot(1,3,3);

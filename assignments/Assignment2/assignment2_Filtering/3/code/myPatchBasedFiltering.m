@@ -1,26 +1,30 @@
-function [L,M,N] = myPatchBasedFiltering(A)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+%% Function - myPatchBasedFiltering
+% Function takes inputs as imageMatrix. It takes as input the image and the standard
+% deviation for the kernel regression function. Then it applies patch-based
+% filter on the image using this parameter
+function [L,M,N] = myPatchBasedFiltering(A, sigma)
+%Blur the image and then subsample it to reduce the time taken.
 A = imgaussfilt(A, 0.66);
 A = A(1:2:end,1:2:end);
+
+%Corrupt the image
 L = A;
-dimen = size(A);
+[m,n] = size(A);
 minI = min(min(A));
 maxI = max(max(A));
-sd = 0.05*(maxI-minI);
+sd = 0.05*(maxI-minI); % set the standard deviation for the noise
 rng(0); % set seed so that the corrupted image is constant
-gaussianMask = sd*randn(dimen(1));
-corruptedImage = A +gaussianMask;
+noise = sd*randn(m);
+corruptedImage = A +noise;
 M = corruptedImage;
 
 w = 12;
 p = 4;
-d = 3.6;
 
-[m,n] = size(corruptedImage);
+
 B = zeros(m,n);
 paddedImg = padarray(corruptedImage, [p p]);
-
+%Gaussian mask to have the 
 gaussian_mask = fspecial('gaussian', [9,9], 1.25);
 
 for i = 1:m
@@ -32,6 +36,7 @@ for i = 1:m
          wyMin = max(j-w,1);
          wyMax = min(j+w,n);
          
+         %Current patch for the pixel [i,j]
          currentPatch = paddedImg(i:i+2*p, j:j+2*p);
          
          numerator = 0;
@@ -40,15 +45,17 @@ for i = 1:m
          for a = wxMin:wxMax
              for b = wyMin:wyMax
                 iterativePatch = paddedImg(a:a+2*p, b:b+2*p);
-                gaussian = exp(-sum(sum(((currentPatch - iterativePatch).^2).*gaussian_mask))/(2*d^2));
+                gaussian = exp(-sum(sum(((currentPatch - iterativePatch).^2).*gaussian_mask))/(2*sigma^2));
                 denominator = gaussian + denominator;
                 numerator = gaussian*corruptedImage(a,b) + numerator;
              end
          end
+         %Update the [i,j] pixel of the output image
          B(i,j) = numerator/denominator;
    end
 end
 N = B;
-rmsd = sqrt(sum((B(:) - A(:)).^2)/(dimen(1)*dimen(2)));
+%Compute the Root Mean Squared Difference value.
+rmsd = sqrt(sum((B(:) - A(:)).^2)/(m*n));
 disp(rmsd);
 end

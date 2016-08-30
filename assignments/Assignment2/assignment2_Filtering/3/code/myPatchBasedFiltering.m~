@@ -1,6 +1,9 @@
-function [L,M,N] = myPatchBasedFiltering(A)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+%% Function - myPatchBasedFiltering
+% Function takes inputs as imageMatrix. It takes as input the image and the standard
+% deviation for the kernel regression function. Then it applies patch-based
+% filter on the image using this parameter
+function [L,M,N] = myPatchBasedFiltering(A, sigma)
+
 A = imgaussfilt(A, 0.66);
 A = A(1:2:end,1:2:end);
 L = A;
@@ -9,13 +12,12 @@ minI = min(min(A));
 maxI = max(max(A));
 sd = 0.05*(maxI-minI);
 rng(0); % set seed so that the corrupted image is constant
-gaussianMask = sd*randn(dimen(1));
-corruptedImage = A +gaussianMask;
+noise = sd*randn(dimen(1));
+corruptedImage = A +noise;
 M = corruptedImage;
 
 w = 12;
 p = 4;
-d = 5.5;
 
 [m,n] = size(corruptedImage);
 B = zeros(m,n);
@@ -40,7 +42,7 @@ for i = 1:m
          for a = wxMin:wxMax
              for b = wyMin:wyMax
                 iterativePatch = paddedImg(a:a+2*p, b:b+2*p);
-                gaussian = exp(-sum(sum(((currentPatch - iterativePatch).^2).*gaussian_mask))/(2*d^2));
+                gaussian = exp(-sum(sum(((currentPatch - iterativePatch).^2).*gaussian_mask))/(2*sigma^2));
                 denominator = gaussian + denominator;
                 numerator = gaussian*corruptedImage(a,b) + numerator;
              end

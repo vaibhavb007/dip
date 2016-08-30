@@ -3,7 +3,7 @@
 % and sigma for gaussian over intensity. Then it applies bilateral
 % filter on image using these parameters.
 
-function [M, N] = myBilateralFiltering(A, sigma_d, sigma_r)
+function [corruptedImage, N] = myBilateralFiltering(A, sigma_d, sigma_r)
 
 dimen = size(A);
 minI = min(min(A));
@@ -12,30 +12,27 @@ maxI = max(max(A));
 sd = double(0.05*(maxI - minI));
 
 rng(0); % set seed so that the corrupted image is constant
-gaussianMask = sd * randn(dimen(1));
-
-figure('OuterPosition',[0 0 500 500]);
-imshow(gaussianMask, []);
-colorbar;
-axis on;
-
-corruptedImage = A + gaussianMask;
-M = corruptedImage;
+noiseMask = sd * randn(dimen(1));
+corruptedImage = A + noiseMask;
 
 w=ceil(1.5*sigma_d);
+
+%create spatial gaussian mask
 [X,Y] = meshgrid(-w:w,-w:w);
 G_space = exp(-(X.^2+Y.^2)/(2*sigma_d^2))/(sigma_d*sqrt(2*pi));
+imagesc(G_space)
+colormap(gray)
+colorbar
+axis on;
 
-dim = size(corruptedImage);
-
-for i = 1:dim(1)
-   for j = 1:dim(2)
+for i = 1:dimen(1)
+   for j = 1:dimen(2)
       
          % Extract local region.
          iMin = max(i-w,1);
-         iMax = min(i+w,dim(1));
+         iMax = min(i+w,dimen(1));
          jMin = max(j-w,1);
-         jMax = min(j+w,dim(2));
+         jMax = min(j+w,dimen(2));
          window = corruptedImage(iMin:iMax,jMin:jMax);
       
          % Compute Gaussian intensity weights.
