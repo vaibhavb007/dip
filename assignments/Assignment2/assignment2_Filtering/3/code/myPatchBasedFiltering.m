@@ -8,19 +8,20 @@ dimen = size(A);
 minI = min(min(A));
 maxI = max(max(A));
 sd = 0.05*(maxI-minI);
+rng(0); % set seed so that the corrupted image is constant
 gaussianMask = sd*randn(dimen(1));
 corruptedImage = A +gaussianMask;
 M = corruptedImage;
 
 w = 12;
 p = 4;
-d = 5.1925;
+d = 3.6;
 
 [m,n] = size(corruptedImage);
 B = zeros(m,n);
 paddedImg = padarray(corruptedImage, [p p]);
 
-gaussian_mask = fspecial('gaussian', [9,9], 1);
+gaussian_mask = fspecial('gaussian', [9,9], 1.25);
 
 for i = 1:m
    for j = 1:n

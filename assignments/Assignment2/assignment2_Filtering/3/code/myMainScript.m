@@ -4,6 +4,9 @@ tic;
 % Call function myPatchBasedFiltering.m which takes inputs - imageMatrix,
 A = load('../data/barbara.mat','-mat');
 A = A.imageOrig;
+% Optimal sigma is 4.
+% For sigma = 4.4, we get the RMSD value as 2.7154
+% For sigma = 3.6, we get the RMSD value as 2.7134
 [A,B,C] = myPatchBasedFiltering(A);
 
 figure('OuterPosition',[0 0 1300 600]);

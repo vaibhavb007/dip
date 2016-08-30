@@ -22,7 +22,7 @@ axis on;
 corruptedImage = A + gaussianMask;
 M = corruptedImage;
 
-w=10;
+w=ceil(1.5*sigma_d);
 [X,Y] = meshgrid(-w:w,-w:w);
 G_space = exp(-(X.^2+Y.^2)/(2*sigma_d^2))/(sigma_d*sqrt(2*pi));
 
