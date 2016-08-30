@@ -13,7 +13,19 @@ A = A.imageOrig;
 [B,C] = myBilateralFiltering(A,optimal_sigma_d,optimal_sigma_r);
 
 figure('OuterPosition',[0 0 1300 600]);
-subplot(1,3,1); Display(A);
-subplot(1,3,2); Display(B);
-subplot(1,3,3); Display(C);
+x1 = subplot(1,3,1);
+imshow(B,[])
+colormap(x1,gray)
+axis on;
+
+x2 = subplot(1,3,2); 
+imshow(A,[])
+colormap(x2,gray)
+axis on;
+
+x3 = subplot(1,3,3);
+imshow(C,[])
+colormap(x3,gray)
+axis on;
+
 toc;
