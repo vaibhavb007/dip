@@ -1,7 +1,16 @@
-function [ ] = myHarrisCornerDetector(A, firstSmoothing, secondSmoothing, k)
+% function [ nzeros] = myHarrisCornerDetector(firstSmoothing, secondSmoothing, k)
+function [ nzeros] = myHarrisCornerDetector(X)
+
+firstSmoothing = X(1);
+secondSmoothing = X(2);
+k = X(3);
+
+A = load('../data/boat.mat');
+A = A.imageOrig;
+
 %Scaling the image
 A = (A - min(min(A)))/(max(max(A))-min(min(A)));
-figure(5),imshow(A,[])
+%figure(5),imshow(A,[])
 %Blur the image initially
 A = imgaussfilt(A, firstSmoothing);
 
@@ -27,7 +36,7 @@ IxyPadded = padarray(Ixy, [p/2 p/2]);
 eigenMajor = zeros(m,n);
 eigenMinor = zeros(m,n);
 Cornerness = zeros(m,n);
-
+nzeros=0;
 for i = 1:m
     for j = 1:n
         gaussianSmoothingMask = fspecial('gaussian', [p, p], secondSmoothing);
@@ -40,12 +49,16 @@ for i = 1:m
         eigenMajor(i,j) = max(max(d));
         eigenMinor(i,j) = min(max(H));
         Cornerness(i,j) = max(0, det(H) - k*trace(H)*trace(H));
-        
+        if(Cornerness(i,j)==0) 
+            nzeros = nzeros +1;
+        end
     end
 end
-figure(4),imshow(A,[])
-figure(1),imshow(eigenMajor,[])
-figure(2),imshow(eigenMinor,[])
-figure(3),imshow(Cornerness,[])
+ 
+disp(nzeros);
+% figure(4),imshow(A,[])
+% figure(1),imshow(eigenMajor,[])
+% figure(2),imshow(eigenMinor,[])
+% figure(3),imshow(Cornerness,[])
 
 end
