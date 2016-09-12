@@ -13,7 +13,7 @@ C = [0;0;0;0.25];
 X0 = [0.001;1.5;0.1];
 myHarrisCornerDetector(X0);
 
-% X = fmincon(f,X0,B,C);
+%X = fmincon(myHarrisCornerDetector,X0,B,C);
 
 
 toc;
